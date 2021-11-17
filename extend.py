@@ -30,18 +30,18 @@ def printDim(npArr):
     print("{}   {}  {} {}".format(npArr.ndim, npArr.shape, npArr.size, len(npArr)))
  
 
-def mirror():
-    input = "/home/dev/dev/IMSA/SIR/IIT/extendingDataset/output.nrrd"
-    annotations = "/home/dev/dev/IMSA/SIR/IIT/extendingDataset/annotation.nrrd"
-    readdata, header = nrrd.read(input);
-    readannot, headerannot = nrrd.read(annotations);
+def mirror(inputSegments, inputAnnotations):
+    input = inputSegments
+    annotations = inputAnnotations
+    readSegments, headerSegments = nrrd.read(input);
+    readAnnotations, headerAnnotations = nrrd.read(annotations);
 
     #gives the first (index 0) intended front view of image
-    firstSegment = readdata[:, :, 0]
-    firstAnnot = readannot[:, :, 0]
+    firstSegment = readSegments[:, :, 0]
+    firstAnnot = readAnnotations[:, :, 0]
     
     #dimensions of data
-    dim1, dim2, dim3 = readdata.shape
+    dim1, dim2, dim3 = readSegments.shape
     
     #mirrors first ten images, mirrors left side
     #mirror left = mirror of left side 
@@ -52,23 +52,23 @@ def mirror():
 
     
     for i in range(0, dim3):
-        segment = readdata[:, :, i] #get shape of one slice
+        segment = readSegments[:, :, i] #get shape of one slice
         x, y = segment.shape #get x and y values
         for i1 in range(0, int(x/2)):
             for i2 in range(0, y):
                 #creating left side mirror
                 #newX, newY = mirrorX, mirror Y, set mirrored side
-                mirrorLeftSegments[455-i1][i2][i] = readdata[i1][i2][i]
+                mirrorLeftSegments[455-i1][i2][i] = readSegments[i1][i2][i]
                 #set regular side (just a copy)
-                mirrorLeftSegments[i1][i2][i] = readdata[i1][i2][i]
+                mirrorLeftSegments[i1][i2][i] = readSegments[i1][i2][i]
                 #mirror annotations
-                mirrorLeftAnnotation[455-i1][i2][i] = readannot[i1][i2][i]
-                mirrorLeftAnnotation[i1][i2][i] = readannot[i1][i2][i] 
+                mirrorLeftAnnotation[455-i1][i2][i] = readAnnotations[i1][i2][i]
+                mirrorLeftAnnotation[i1][i2][i] = readAnnotations[i1][i2][i] 
                 #creating right side mirror
-                mirrorRightSegments[i1][i2][i] = readdata[455-i1][i2][i]
-                mirrorRightSegments[i1][i2][i] = readdata[i1][i2][i]
-                mirrorRightAnnotation[i1][i2][i] = readannot[455-i1][i2][i]
-                mirrorRightAnnotation[i1][i2][i] = readannot[i1][i2][i]  
+                mirrorRightSegments[i1][i2][i] = readSegments[455-i1][i2][i]
+                mirrorRightSegments[i1][i2][i] = readSegments[i1][i2][i]
+                mirrorRightAnnotation[i1][i2][i] = readAnnotations[455-i1][i2][i]
+                mirrorRightAnnotation[i1][i2][i] = readAnnotations[i1][i2][i]  
                 
     nrrd.write("mirrorLeftSegments.nrrd", mirrorLeftSegments)
     nrrd.write("mirrorLeftAnnotation.nrrd", mirrorLeftAnnotation)
@@ -76,4 +76,5 @@ def mirror():
     nrrd.write("mirrorRightAnnotation.nrrd", mirrorRightAnnotation)
 
 if __name__ == "__main__":
-    mirror()
+    inputSegments, inputAnnotations = "/home/dev/dev/IMSA/SIR/IIT/extendingDataset/output.nrrd", "/home/dev/dev/IMSA/SIR/IIT/extendingDataset/annotation.nrrd"
+    mirror(inputSegments, inputAnnotations)
