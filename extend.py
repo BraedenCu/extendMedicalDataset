@@ -39,22 +39,24 @@ def mirror():
     #gives the first (index 0) intended front view of image
     firstSegment = readdata[:, :, 0]
     firstAnnot = readannot[:, :, 0]
-
+    
+    #dimensions of data
+    dim1, dim2, dim3 = readdata.shape
+    
     #mirrors first ten images, mirrors left side
     #mirror left = mirror of left side 
     mirrorLeftSegments = np.zeros((456, 456, 503))
     mirrorLeftAnnotation = np.zeros((456, 456, 503))
+    mirrorRightSegments = np.zeros((456, 456, 503))
+    mirrorRightAnnotation = np.zeros((456, 456, 503))
 
-    for i in range(0, 10):
+    
+    for i in range(0, dim3):
         segment = readdata[:, :, i] #get shape of one slice
-        #annot = readdata[:, :, i]
-        #newSegment = readdata[:, :, i]
-        #newAnnot = readdata[:, :, i]
-        x, y = segment.shape
-        #iterate over x
+        x, y = segment.shape #get x and y values
         for i1 in range(0, int(x/2)):
-            #iterate over y
             for i2 in range(0, y):
+                #creating left side mirror
                 #newX, newY = mirrorX, mirror Y, set mirrored side
                 mirrorLeftSegments[455-i1][i2][i] = readdata[i1][i2][i]
                 #set regular side (just a copy)
@@ -62,16 +64,16 @@ def mirror():
                 #mirror annotations
                 mirrorLeftAnnotation[455-i1][i2][i] = readannot[i1][i2][i]
                 mirrorLeftAnnotation[i1][i2][i] = readannot[i1][i2][i] 
+                #creating right side mirror
+                mirrorRightSegments[i1][i2][i] = readdata[455-i1][i2][i]
+                mirrorRightSegments[i1][i2][i] = readdata[i1][i2][i]
+                mirrorRightAnnotation[i1][i2][i] = readannot[455-i1][i2][i]
+                mirrorRightAnnotation[i1][i2][i] = readannot[i1][i2][i]  
                 
-    nrrd.write("LEFTMIRRORSEGMENT.nrrd", mirrorLeftSegments[:, :, 0])
-    nrrd.write("LEFTORIG.nrrd", readdata[:, :, 0])
-    nrrd.write("LEFTMIRRORANNOT.nrrd", mirrorLeftAnnotation[:, :, 0])
-    nrrd.write("LEFTANNOT.nrrd", readannot[:, :, 0])
-    
-    #output = read_nii_bysitk(input)
-    #img = Image.fromarray(output[:, 160], 'RGB');
-    #img.show()
-    #printDim(output)
+    nrrd.write("mirrorLeftSegments.nrrd", mirrorLeftSegments)
+    nrrd.write("mirrorLeftAnnotation.nrrd", mirrorLeftAnnotation)
+    nrrd.write("mirrorRightSegments.nrrd", mirrorRightSegments)
+    nrrd.write("mirrorRightAnnotation.nrrd", mirrorRightAnnotation)
 
 if __name__ == "__main__":
     mirror()
