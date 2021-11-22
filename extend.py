@@ -76,5 +76,5 @@ def mirror(inputSegments, inputAnnotations):
     nrrd.write("mirrorRightAnnotation.nrrd", mirrorRightAnnotation)
 
 if __name__ == "__main__":
-    inputSegments, inputAnnotations = "/home/dev/dev/IMSA/SIR/IIT/extendingDataset/output.nrrd", "/home/dev/dev/IMSA/SIR/IIT/extendingDataset/annotation.nrrd"
+    inputSegments, inputAnnotations = "output.nrrd", "annotation.nrrd"
     mirror(inputSegments, inputAnnotations)
